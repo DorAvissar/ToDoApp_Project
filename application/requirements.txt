@@ -1,0 +1,8 @@
+Flask==2.0.2
+pymongo==3.12.1
+psutil==5.9.5
+Werkzeug==2.0.3
+Flask-Session==0.4.0
+pytest==6.2.4
+pytest-flask==1.2.0
+prometheus_flask_exporter

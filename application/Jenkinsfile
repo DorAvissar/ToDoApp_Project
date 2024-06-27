@@ -1,0 +1,123 @@
+pipeline {
+    agent {
+        kubernetes {
+            label 'dind-agent'
+            yamlFile 'jenkins-agent.yaml'
+            defaultContainer 'ez-docker-helm-build'
+        }
+    }
+
+    environment {
+        DOCKER_IMAGE = 'doravissar/todo_app'
+        DOCKER_CREDENTIALS_ID = 'dockerhub_cred'
+        VERSION = "${env.BUILD_NUMBER}"
+        GIT_CREDENTIALS_ID = 'gitlab_cred' // Use the correct credential ID for GitLab
+        HELM_REGISTRY = 'oci://registry-1.docker.io/doravissar'
+    }
+
+    stages {
+        stage("Checkout code") {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage("Build Docker image") {
+            steps {
+                script {
+                    dockerImage = docker.build("${DOCKER_IMAGE}:${VERSION}", "--no-cache .")
+                }
+            }
+        }
+        stage('Push to DockerHub') {
+            steps {
+                script {
+                    docker.withRegistry('', DOCKER_CREDENTIALS_ID) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+
+        stage("Unit Test") {
+            steps {
+                script {
+                    sh "docker-compose up --build test-app"
+                    sh "docker-compose down"
+                }
+            }
+        }
+
+        stage('Update Helm Chart Version') {
+            steps {
+                script {
+                    def newTag = "${VERSION}.0.0"
+                    sh "sed -i 's/^version:.*/version: \"${newTag}\"/' apphelm/Chart.yaml"
+                }
+            }
+        }
+
+        stage('Update Helm Values') {
+            steps {
+                script {
+                    def newTag = "${VERSION}"
+                    sh "sed -i 's/tag: .*/tag: \"${newTag}\"/' apphelm/values.yaml"
+                }
+            }
+        }
+
+        stage('Package Helm Chart') {
+            steps {
+                script {
+                    sh "helm package apphelm"
+                }
+            }
+        }
+
+        stage('Login to DockerHub for Helm Push') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh 'docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"'
+                    }
+                }
+            }
+        }
+
+        stage('Push Helm Chart to DockerHub') {
+            steps {
+                script {
+                    sh "helm push apphelm-${VERSION}.0.0.tgz ${HELM_REGISTRY}"
+                }
+            }
+        }
+
+        stage('Debug Working Directory') {
+            steps {
+                script {
+                    sh 'pwd'
+                    sh 'ls -la'
+                }
+            }
+        }
+        stage('Push Changes to GitLab') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'gitlab_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh '''
+                            git config --global --add safe.directory /home/jenkins/agent/workspace/FinalProject
+                            git config --global user.email "jenkins@yourcompany.com"
+                            git config --global user.name "Jenkins"
+                            git fetch https://${USERNAME}:${PASSWORD}@gitlab.com/sela-tracks/1099/students/DorAvissar/application.git
+                            git checkout --track origin/main
+                            git add .
+                            git commit -m "Update image tag to ${VERSION}"
+                            git push https://${USERNAME}:${PASSWORD}@gitlab.com/sela-tracks/1099/students/DorAvissar/application.git main
+                        '''
+                    }
+                    echo 'Finished pushing changes to GitLab'
+                }
+            }
+        }
+    }
+}

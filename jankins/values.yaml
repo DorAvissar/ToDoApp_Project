@@ -1,0 +1,6 @@
+persistence:
+  enabled: true
+  existingClaim: jenkins-pvc
+  size: 10Gi
+  storageClass: ""
+  accessMode: ReadWriteOnce

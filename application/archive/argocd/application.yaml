@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: todo-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://gitlab.com/sela-tracks/1099/students/DorAvissar/application.git'
+    targetRevision: main
+    path: apphelm  # Corrected path
+    helm:
+      parameters:
+        - name: image.repository
+          value: "doravissar/todo_app"
+      releaseName: todo-app
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: app-dev
+  syncPolicy:
+    automated:
+      prune: true  # Enables automatic deletion of resources no longer in git
+      selfHeal: true  # Enables automatic syncing if cluster state changes
