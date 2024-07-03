@@ -36,10 +36,11 @@ The structure and essential files: (before adding pytest)
 └── requirements.txt     # Python packages required for the application.
 ``` 
 
-### Create a Jenkins Agent
-- Setup Jenkins Kubernetes Plugin: Configure the Jenkins Kubernetes plugin and docker plugin to manage Jenkins agents that run as pods within your Kubernetes cluster.
+### Create a Jenkins Agent (jenkins-agent.yaml)
 
-- Configure Pod Template: Define a pod template in Jenkins to specify the Docker image and necessary tools (like Docker and Helm) required for building and deploying your application. (this is a part of the jenkins file we will go over later in this readme)
+- This Kubernetes pod definition creates a pod named jenkins-agent-pod that runs a single container named ez-docker-helm-build. The container uses an image from a Docker registry (ezezeasy/ez-docker-helm-build:1.41), and the image pull policy is set to Always, meaning Kubernetes will check for a newer version of the image each time the pod starts.
+
+- The container runs in a privileged security context, which is necessary for certain operations like accessing the host's Docker daemon. This is facilitated by mounting the Docker socket from the host (/var/run/docker.sock) into the container. This allows the container to interact with the host's Docker daemon, enabling it to build, run, and push Docker images directly from within the Kubernetes cluster.
 
 ### Create a Helm Chart for the Application (using gitbash)
 - Initialize Helm Chart: Use helm create to generate a new chart template for your application, which will include Kubernetes deployment, service, and ingress resources. (in our exemple the name of the chart is "apphelm")
@@ -55,9 +56,7 @@ $ helm create apphelm
 - To create a Helm package called apphelm and upload it to Docker Hub as an OCI artifact, follow these steps:
 ```
 $ cd /your root folder (this case is application)
-$ export HELM_EXPERIMENTAL_OCI=1
 $ helm package apphelm 
-$ helm chart save ./apphelm-0.1.0.tgz docker.io/your-dockerhub-username/apphelm:0.1.0 (Replace your-dockerhub-username with your Docker Hub username.)
 $ docker login --username <username> --password <password>
 $ helm push apphelm-0.1.0.tgz oci://registry-1.docker.io/doravissar
 
@@ -165,8 +164,6 @@ Pipeline Overview: The Jenkins pipeline automates the entire process of building
 
 11. Push Helm Chart to DockerHub: Pushes the Helm chart to the specified Helm registry.
 
-12. Push Changes to GitLab: Configures Git, checks out the main branch, commits the changes, and pushes them to the GitLab repository.
-
 dont forget to add the docker and gitlab credentials to jenkins !! 
 
 ## To summarize: 
@@ -176,7 +173,7 @@ Before pushing the image, the pipeline runs unit tests using Docker Compose to e
 
 After the tests are successful, the pipeline updates the Helm chart's values.yaml file to reflect the new image version, ensuring that the Helm chart is always in sync with the latest Docker image. The Helm chart version is also updated in the Chart.yaml file to maintain proper versioning. The Helm chart is then packaged and pushed to Docker Hub, making it available for deployment.
 
-These changes, including the updated image tag and Helm chart, are committed and pushed back to the Git repository. Argo CD, which continuously monitors this repository, automatically detects and deploys the latest changes to the Kubernetes cluster.
+These changes, including the updated image tag and Helm chart, are committed and pushed back to the Git repository. Argo CD, which continuously monitors the docker-hub helm repository, automatically detects and deploys the latest changes to the Kubernetes cluster.
 
 The process ensures that the application is consistently and correctly deployed with the latest updates, reducing manual intervention and potential errors.
 

@@ -18,6 +18,7 @@ def client(app):
 @pytest.fixture
 def init_db(app):
     mongo_uri = app.config['MONGO_URI']
+    print("Attempting to connect with URI:", mongo_uri)  # Log the URI being used to connect
     for _ in range(5):  # Try 5 times to connect with a delay
         try:
             client = MongoClient(mongo_uri, serverSelectionTimeoutMS=2000)

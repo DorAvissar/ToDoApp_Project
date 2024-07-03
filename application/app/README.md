@@ -13,11 +13,13 @@ Before you begin, ensure you have the following installed:
 
 ## Application Structure
 
-```plaintext
-/app.py              # Main Python application file with Flask routes.
-/requirements.txt    # Python dependencies which are necessary to run the application.
-/Dockerfile          # Dockerfile for building the Docker image.
 ```
+/application/
+└── app             
+   └── app.py           # Main Python application file with Flask routes.
+├── Dockerfile          # Dockerfile for building the Docker image.
+├── requirements.txt    # List of Python dependencies.
+``` 
 
 ## Application Overview
 The application features a simple web interface for managing TODO tasks, allowing users to add, update, mark as complete, delete, and search for tasks based on various criteria. Each task can contain details like name, description, due date, priority, and assignee.

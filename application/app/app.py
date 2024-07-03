@@ -2,17 +2,20 @@ from flask import Flask, render_template, request, redirect, url_for
 from bson import ObjectId
 from pymongo import MongoClient
 import os
+from prometheus_flask_exporter import PrometheusMetrics
+
 
 app = Flask(__name__)
+metrics = PrometheusMetrics(app)
+metrics.info('app_info', 'Application info', version='1.0.3')
 title = "TODO sample application with Flask and MongoDB"
 heading = "TODO Reminder with Flask and MongoDB"
 
-# Fetch database credentials from environment variables
 mongo_username = os.getenv("MONGO_USERNAME")  
 mongo_password = os.getenv("MONGO_PASSWORD")  
 mongo_dbname = os.getenv("MONGO_DBNAME")  
-mongo_host = "host.docker.internal" 
-mongo_port = "31037"  
+mongo_host = os.getenv("MONGO_HOST")  
+mongo_port = os.getenv("MONGO_PORT")  
 
 mongo_url = f"mongodb://{mongo_username}:{mongo_password}@{mongo_host}:{mongo_port}/{mongo_dbname}?authSource=admin"
 client = MongoClient(mongo_url)
@@ -20,7 +23,8 @@ db = client[mongo_dbname]  # Select the database dynamically
 todos = db.todo  # Select the collection name
 
 def redirect_url():
-    return request.args.get('next') or request.referrer or url_for('index')
+    return request.args.get('next') or request.referrer or url_for('lists')
+
 
 @app.route("/list")
 def lists():
@@ -74,10 +78,11 @@ def remove():
     return redirect("/")
 
 @app.route("/update")
-def update():
-    id = request.values.get("_id")
-    task = todos.find_one({"_id": ObjectId(id)})
-    return render_template('update.html', tasks=task, h=heading, t=title)
+def update_task():
+    task_id = request.values.get("_id")
+    task = db.collection.find_one({'_id': ObjectId(task_id)})
+    return render_template('update.html', task=task)
+
 
 @app.route("/action3", methods=['POST'])
 def action3():
@@ -108,6 +113,6 @@ def collections():
     collections = db.list_collection_names()
     return render_template('collections.html', collections=collections, t=title, h=heading)
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
 
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)

@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   mongodb:
     image: mongo:latest
@@ -7,7 +6,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: mongoDB
     ports:
-      - 27017:27017
+      - "27017:27017"
     networks:
       - app-network
       
@@ -16,6 +15,11 @@ services:
       context: .
       dockerfile: Dockerfile.test
     environment:
+      - MONGO_DBNAME=mymongodb
+      - MONGO_USERNAME=root
+      - MONGO_PASSWORD=mongoDB
+      - MONGO_HOST=mongodb  # Use the service name as the hostname
+      - MONGO_PORT=27017
       - MONGO_URL=mongodb://root:mongoDB@mongodb:27017/mymongodb?authSource=admin
     depends_on:
       - mongodb
@@ -26,5 +30,3 @@ services:
 networks:
   app-network:
     driver: bridge
-
-

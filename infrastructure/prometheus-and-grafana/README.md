@@ -79,3 +79,27 @@ Password: prom-operator
 ### you can also check out this link to investigate things in depth:
 
 https://medium.com/globant/setup-prometheus-and-grafana-monitoring-on-kubernetes-cluster-using-helm-3484efd85891
+
+### monitor the app
+To monitor the Flask application using Prometheus and Grafana on a Kubernetes cluster, you can follow these steps:
+1. Expose Flask Metrics for Prometheus:
+- Install Prometheus Flask Exporter (in the requirements.txt)
+- Modify Your Application (you can see the metrics part On the top part of the application)
+
+2. Configure Prometheus to Scrape Metrics
+- You'll need to configure Prometheus to scrape metrics from your Flask application. create a yaml (Rule1 in our case) to include your Flask app as a target. Assuming your Flask app is running in the same Kubernetes cluster.
+
+3. Deploy Change 
+    ```
+    helm upgrade monitoring prometheus-community/kube-prometheus-stack --namespace monitoring -f <the yaml file name>
+    ```
+    now, before accessing the prometheus, try accessing the metrics url:
+    
+    ```
+    http://localhost:<nodeport>/metrics
+    ``` 
+4. Set Up Grafana Dashboards
+Once Prometheus is collecting metrics from your Flask app, you can visualize this data using Grafana:
+- Access Grafana on your Kubernetes cluster.
+- Add Prometheus as a data source in Grafana.
+- Create a new dashboard in Grafana to visualize metrics from your Flask application. 

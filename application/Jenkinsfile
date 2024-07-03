@@ -91,33 +91,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Debug Working Directory') {
-            steps {
-                script {
-                    sh 'pwd'
-                    sh 'ls -la'
-                }
-            }
-        }
-        stage('Push Changes to GitLab') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'gitlab_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh '''
-                            git config --global --add safe.directory /home/jenkins/agent/workspace/FinalProject
-                            git config --global user.email "jenkins@yourcompany.com"
-                            git config --global user.name "Jenkins"
-                            git fetch https://${USERNAME}:${PASSWORD}@gitlab.com/sela-tracks/1099/students/DorAvissar/application.git
-                            git checkout --track origin/main
-                            git add .
-                            git commit -m "Update image tag to ${VERSION}"
-                            git push https://${USERNAME}:${PASSWORD}@gitlab.com/sela-tracks/1099/students/DorAvissar/application.git main
-                        '''
-                    }
-                    echo 'Finished pushing changes to GitLab'
-                }
-            }
-        }
+        
     }
 }

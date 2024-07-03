@@ -1,130 +1,197 @@
 /* Updated style.css */
 body {
+    font-family: 'Poppins', sans-serif;
     color: #333;
-    background-color: #f9f9f9;
+    background-color: #f0f0f0;
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
 }
 
-h1 {
-    font-family: 'Helvetica Neue', sans-serif;
-    color: #4CAF50;
+header {
+    background-color: #005f73;
+    color: #edf6f9;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-family: 'Pacifico', cursive;
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
     text-align: center;
     margin-top: 20px;
 }
 
+nav ul li {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: #edf6f9;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background-color: #2a9d8f;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+nav ul li a:hover, nav ul li a.active {
+    background-color: #e76f51;
+    transform: scale(1.1);
+}
+
+main {
+    padding: 20px;
+}
+
+.search-bar {
+    margin-bottom: 20px;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-container input, .search-container select, .search-container button {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.search-container button {
+    background-color: #005f73;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-container button:hover {
+    background-color: #e76f51;
+}
+
 table {
-    width: 95%;
-    margin: 20px auto;
+    width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
+    margin-bottom: 20px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-td, th {
+table th, table td {
     border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
+    padding: 10px;
+    text-align:left;
 }
 
-th {
-    background-color: #4CAF50;
+table th {
+    background-color: #005f73;
     color: white;
 }
 
-tr:nth-child(even) {
-    background-color: #f2f2f2;
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
 }
 
-tr:hover {
-    background-color: #ddd;
+table tr:hover {
+    background-color: #f1f1f1;
 }
 
-input[type=submit], button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 4px;
+.add-task {
+    margin-top: 20px;
 }
 
-input[type=text], textarea {
+.add-task h2, .section-title {
+    font-family: 'Pacifico', cursive;
+    font-size: 1.8em;
+    color: #005f73;
+}
+
+.add-task .form-group {
+    margin-bottom: 15px;
+}
+
+.add-task .form-group label {
+    display:block;
+    margin-bottom: 5px;
+}
+
+.add-task .form-group input, .add-task .form-group textarea, .add-task .form-group select {
     width: 100%;
     padding: 10px;
-    margin: 5px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
     box-sizing: border-box;
 }
 
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-    text-align: center;
-}
-
-li {
-    display: inline;
-    margin-right: -4px;
-}
-
-li a {
-    display: inline-block;
+.add-task button {
+    background-color: #005f73;
     color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
-a.active {
-    background-color: #4CAF50;
-}
-
-li a:hover {
-    background-color: #111;
-}
-
-a {
-    color: #4CAF50;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-hr {
-    border: 1px solid #4CAF50;
-    margin: 20px 0;
+.add-task button:hover {
+    background-color: #e76f51;
+    transform: scale(1.1);
 }
 
 footer {
+    background-color: #005f73;
+    color: white;
     text-align: center;
     padding: 10px;
-    background-color: #333;
-    color: white;
     position: fixed;
     bottom: 0;
     width: 100%;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Additional styles for delete button */
+footer p {
+    margin: 0;
+    font-size: 1em;
+}
+
+/* Additional button styles */
 button.delete-button {
-    background-color: red;
+    background-color: #ffcccc;
+    color: black;
+    border: 1px solid #ffaaaa;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
 button.delete-button:hover {
-    background-color: darkred;
+    background-color: #ffaaaa;
+    transform: scale(1.05);
+}
+
+button.edit-button {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+button.edit-button:hover {
+    background-color: #e2e6ea;
+    transform: scale(1.05);
 }

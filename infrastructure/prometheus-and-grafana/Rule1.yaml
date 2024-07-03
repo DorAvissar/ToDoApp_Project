@@ -1,10 +1,18 @@
+prometheus:
+  prometheusSpec:
+    additionalScrapeConfigs:
+      - job_name: 'flask-app'
+        static_configs:
+          - targets:
+            - 'apphelmnew.app-helm-dev.svc.cluster.local:5000'
+
 additionalPrometheusRulesMap:
   rule-name:
     groups:
     - name: project
       rules:
       - alert: LowRunningPodsCount
-        expr: count(kube_pod_status_phase{namespace="app-helm-dev", pod=~"apphelmnew.*", phase="Running"}) < 4
+        expr: count(kube_pod_status_phase{namespace="app-helm-dev", pod=~"apphelmnew.*", phase="Running"}) < 3
         for: 1m
         labels:
           severity: critical

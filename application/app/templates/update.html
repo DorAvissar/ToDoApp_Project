@@ -1,49 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>{{t}}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Task</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/style.css') }}">
 </head>
 <body>
-    <h1>{{h}}</h1>
-    <hr>
-    <h3>Update tasks with a reference</h3>
-    <form action="/action3" method="POST">
-    {% for task in tasks %}
-        Unique Object ID: {{ task['_id'] }}<br/>
-        <input type="text" name="_id" value="{{ task['_id'] }}" hidden>
-        <table>
-            <tr>
-                <td>Task Name</td><td> : </td><td><input type="text" name="name" value="{{ task['name'] }}" placeholder="{{ task['name'] }}"></td>
-            </tr>
-            <tr>
-                <td>Description</td><td> : </td><td><textarea type="text" name="desc" rows="3" cols="30" placeholder="{{ task['desc'] }}">{{ task['desc'] }}</textarea></td>
-            </tr>
-            <tr>
-                <td><label>Date:</label></td><td> : </td><td><input type="date" name="date" value="{{ task['date'] }}" placeholder="{{ task['date'] }}"></td>
-            </tr>
-            <tr>
-                <td><label>Priority:</label></td><td> : </td>
-                <td>
-                    <select name="pr" required>
+    <header>
+        <h1>Update Task with a Reference</h1>
+    </header>
+    <main>
+        <section class="add-task">
+            <h2 class="section-title">Update Task</h2>
+            <form action="/action3" method="POST">
+                <div class="form-group">
+                    <label>Unique Object ID: {{ task['_id'] }}</label>
+                    <input type="text" name="_id" value="{{ task['_id'] }}" hidden>
+                </div>
+                <div class="form-group">
+                    <label for="name">Task Name</label>
+                    <input type="text" id="name" name="name" value="{{ task['name'] }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="desc">Description</label>
+                    <textarea id="desc" name="desc" rows="3" required>{{ task['desc'] }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" value="{{ task['date'] }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="pr">Priority</label>
+                    <select id="pr" name="pr" required>
                         <option value="no-priority" {% if task['pr'] == 'no-priority' %}selected{% endif %}>No Priority</option>
                         <option value="low-priority" {% if task['pr'] == 'low-priority' %}selected{% endif %}>Low Priority</option>
                         <option value="medium-priority" {% if task['pr'] == 'medium-priority' %}selected{% endif %}>Medium Priority</option>
                         <option value="high-priority" {% if task['pr'] == 'high-priority' %}selected{% endif %}>High Priority</option>
                     </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Assignee</td><td> : </td><td><input type="text" name="assignee" value="{{ task['assignee'] }}" placeholder="{{ task['assignee'] }}"></td>
-            </tr>
-        </table>
-    {% endfor %}
-        <button type="submit">Update Task</button>
-        <br/>
-    </form>
-    <a href="/">Return to Task List</a>
+                </div>
+                <div class="form-group">
+                    <label for="assignee">Assignee</label>
+                    <input type="text" id="assignee" name="assignee" value="{{ task['assignee'] }}" required>
+                </div>
+                <button type="submit" class="edit-button">Update Task</button>
+            </form>
+            <a href="/">Return to Task List</a>
+        </section>
+    </main>
     <footer>
-        &copy; 2024 TODO Reminder with Flask and MongoDB
+        <p>&copy; 2024 TODO Reminder with Flask and MongoDB</p>
     </footer>
 </body>
 </html>

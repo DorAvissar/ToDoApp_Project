@@ -1,93 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{t}}</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,600|Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/style.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/emoji.css') }}">
-    <script src="{{ url_for('static', filename='assets/twemoji.min.js') }}"></script>  
-    <script src="{{ url_for('static', filename='assets/emoji.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/twemoji.min.js') }}"></script>
 </head>
 <body>
-    <h1>{{ h }}</h1>
-    <ul>
-        <li><a href="/list" class="{{ a1 }}">ALL</a></li>
-        <li><a href="/" class="{{ a2 }}">Uncompleted</a></li>
-        <li><a href="/completed" class="{{ a3 }}">Completed</a></li>
-    </ul>
-    <hr>
-    {% if todos[0] %}
-    <div span="right">
-        <form action="/search" method="GET">
-            <table class="none" id="close">
-                <tr>
-                    <td></td><td></td>
-                    <td><big><b>Search Reference:</b></big></td>
-                    <td><select name="refer" required>
+    <header>
+        <h1>{{ h }}</h1>
+        <nav>
+            <ul>
+                <li><a href="/list" class="{{ a1 }}"><i class="fas fa-list-ul nav-icon"></i> ALL</a></li>
+                <li><a href="/" class="{{ a2 }}"><i class="fas fa-tasks nav-icon"></i> Uncompleted</a></li>
+                <li><a href="/completed" class="{{ a3 }}"><i class="fas fa-check nav-icon"></i> Completed</a></li>
+            </ul>
+        </nav>
+    </header>
+<main>
+    <section>
+        {% if todos %}
+        <div class="search-bar">
+            <form action="/search" method="GET">
+                <div class="search-container">
+                    <label for="refer">🔍 Search Reference:</label>
+                    <select name="refer" id="refer" required>
                         <option value="name">Task Name</option>
                         <option value="desc">Description</option>
                         <option value="date">Date</option>
                         <option value="pr">Priority</option>
                         <option value="assignee">Assignee</option>
-                    </select></td>
-                    <td><input type="text" name="key" placeholder="Search Task" size="15" /></td>
-                    <td><button type="submit">Search</button></td>
+                    </select>
+                    <input type="text" name="key" placeholder="Search Task" required />
+                    <button type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+        <h2 class="section-title">📝 To-Do List:</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Task Name</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Priority</th>
+                    <th>Assignee</th>
+                    <th>Actions</th>
                 </tr>
-            </table>
-        </form>
-    </div>
-    <b><big>To-Do LIST :</big></b>
-    <table>
-        <tr id="row">
-            <th class="status">Status</th>
-            <th class="name">Task Name</th>
-            <th class="desc">Description</th>
-            <th class="date">Date</th>
-            <th class="pr">Priority</th>
-            <th class="assignee">Assignee</th>
-            <th class="func1">Remove</th>
-            <th class="func2">Modify</th>
-        </tr>
-        {% for todo in todos %}
-        <tr class="datas">
-            <td><a href="./done?_id={{ todo['_id'] }}"><input type="image" src="static/images/{{todo['done']}}.png" alt="Submit ME"></a></td>
-            <td class="name">{{ todo["name"] }}</td>
-            <td class="desc">{{ todo["desc"] }}</td>
-            <td class="date">{{ todo["date"] }}</td>
-            <td class="pr">{{ todo["pr"] }}</td>
-            <td class="assignee">{{ todo["assignee"] }}</td>
-            <td class="func1"><a href="./remove?_id={{ todo['_id'] }}"><button type="submit" class="delete-button">DELETE</button></a></td>
-            <td class="func1"><a href="./update?_id={{ todo['_id'] }}"><button type="submit">EDIT</button></a></td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-    <h4>No Tasks in the List !!</h4>
-    {% endif %}
-    <hr/>
-    <form action="/action" method="POST">
-        <table class="none">
-            <tr>
-                <td><b><big><label>Add a Task : </label></big></b></td>
-            </tr>
-            <tr>
-                <td><input type="text" name="name" placeholder="Task name" required /></td>
-                <td><textarea name="desc" rows="1" cols="30" placeholder="Enter Description here..." required></textarea></td>
-                <td><label>Date: <input type="date" name="date" required /></label></td>
-                <td><label>Priority: 
-                    <select name="pr" required>
+            </thead>
+            <tbody>
+                {% for todo in todos %}
+                <tr>
+                    <td><a href="./done?_id={{ todo['_id'] }}"><img src="static/images/{{todo['done']}}.png" alt="Status" class="status-icon"></a></td>
+                    <td>{{ todo["name"] }}</td>
+                    <td>{{ todo["desc"] }}</td>
+                    <td>{{ todo["date"] }}</td>
+                    <td>{{ todo["pr"] }}</td>
+                    <td>{{ todo["assignee"] }}</td>
+                    <td>
+                        <a href="./remove?_id={{ todo['_id'] }}"><button class="delete-button">DELETE</button></a>
+                        <a href="./update?_id={{ todo['_id'] }}"><button class="edit-button">EDIT</button></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="no-tasks">No Tasks in the List! 🎉</p>
+        {% endif %}
+    </section>
+        <section class="add-task">
+            <h2 class="section-title">➕ Add a Task:</h2>
+            <form action="/action" method="POST">
+                <div class="form-group">
+                    <label for="name">Task Name</label>
+                    <input type="text" id="name" name="name" placeholder="Task name" required />
+                </div>
+                <div class="form-group">
+                    <label for="desc">Description</label>
+                    <textarea id="desc" name="desc" rows="3" placeholder="Enter Description here..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" required />
+                </div>
+                <div class="form-group">
+                    <label for="pr">Priority</label>
+                    <select id="pr" name="pr" required>
                         <option value="no-priority">No Priority</option>
                         <option value="low-priority">Low Priority</option>
                         <option value="medium-priority">Medium Priority</option>
                         <option value="high-priority">High Priority</option>
                     </select>
-                </label></td>
-                <td><input type="text" name="assignee" placeholder="Assignee" required /></td>
-                <td><button type="submit"> Create </button></td>
-            </tr>
-        </table>
-    </form>
+                </div>
+                <div class="form-group">
+                    <label for="assignee">Assignee</label>
+                    <input type="text" id="assignee" name="assignee" placeholder="Assignee" required />
+                </div>
+                <button type="submit">Create</button>
+            </form>
+        </section>
+    </main>
     <footer>
-        &copy; 2024 TODO Reminder BY Dor Avissar 
+        <p>&copy; 2024 TODO Reminder by Dor Avissar </p>
     </footer>
 </body>
 </html>

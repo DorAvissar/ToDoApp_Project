@@ -69,6 +69,16 @@ spec:
                 secretKeyRef:
                   name: mongodb-secret
                   key: dbname
+            - name: MONGO_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: host
+            - name: MONGO_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: port
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}

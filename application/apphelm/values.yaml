@@ -8,7 +8,7 @@ image:
   repository: doravissar/todo_app
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "70"
+  tag: "76"
 
 imagePullSecrets: []
 nameOverride: ""
